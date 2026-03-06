@@ -31,25 +31,31 @@
       z-index: 0;
     }
 
-    .frase {
-      position: absolute;
-      top: 59%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80%;
-      max-width: 1548px;
-      text-align: center;
-      font-size: 150px;
-      line-height: 1.1;
-      font-weight: 800;
-      color: #ffe4f3;
-      font-family: "kit-rounded", sans-serif;
-      opacity: 0;
-      transition: opacity 0.3s ease-in-out;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      white-space: normal;
-    }
+    .nombre{
+  position:absolute;
+  top:40%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  font-size:120px;
+  font-weight:800;
+  color:#ffffff;
+  opacity:0;
+  transition:opacity 0.3s ease-in-out;
+}
+
+.mensaje{
+  position:absolute;
+  top:60%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  width:80%;
+  text-align:center;
+  font-size:150px;
+  font-weight:800;
+  color:#ffe4f3;
+  opacity:0;
+  transition:opacity 0.3s ease-in-out;
+}
 
     .mostrar {
       opacity: 1;
@@ -63,39 +69,53 @@
       Cargando.
     </video>
 
-    <div class="frase" id="frase"></div>
+    <div class="nombre" id="nombre"></div>
+<div class="mensaje" id="mensaje"></div>
   </div>
 
 <script>
-  const url = "https://script.google.com/macros/s/AKfycbwK3DXDqx6aEjekLihmQMxB3B1Yi7vVb2LrOKgIyvJ7m80aFuBH7btQ0ozN_HCdWGr8ag/exec";
+  cconst url = "https://script.google.com/macros/s/AKfycbwK3DXDqx6aEjekLihmQMxB3B1Yi7vVb2LrOKgIyvJ7m80aFuBH7btQ0ozN_HCdWGr8ag/exec";
 
-  fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      const frases = data.mensajes;
-      const el = document.getElementById("frase");
+fetch(url)
+.then(res => res.json())
+.then(data => {
 
-      function mostrarFrase() {
-        const aleatoria = frases[Math.floor(Math.random() * frases.length)];
-        let texto = aleatoria.toLowerCase();
-        el.innerText = texto.charAt(0).toUpperCase() + texto.slice(1);
-        el.classList.add("mostrar");
-      }
+  const mensajes = data;
 
-      mostrarFrase();
+  const nombreEl = document.getElementById("nombre");
+  const mensajeEl = document.getElementById("mensaje");
 
-      setInterval(() => {
-        el.classList.remove("mostrar");
-        setTimeout(mostrarFrase, 500);
-      }, 5000);
-    })
-    .catch(err => {
-      console.error("Error cargando frases:", err);
-      document.getElementById("frase").innerText = "Error al cargar frase";
-    });
+  function mostrarMensaje(){
+
+    const aleatorio = mensajes[Math.floor(Math.random() * mensajes.length)];
+
+    nombreEl.innerText = aleatorio.nombre;
+    mensajeEl.innerText = aleatorio.mensaje;
+
+    nombreEl.classList.add("mostrar");
+    mensajeEl.classList.add("mostrar");
+  }
+
+  mostrarMensaje();
+
+  setInterval(()=>{
+
+    nombreEl.classList.remove("mostrar");
+    mensajeEl.classList.remove("mostrar");
+
+    setTimeout(mostrarMensaje,500);
+
+  },5000);
+
+})
+.catch(err=>{
+  console.error("Error:",err);
+});
+   
 </script>
 </body>
 </html>
+
 
 
 
