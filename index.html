@@ -96,36 +96,55 @@
   </div>
 
 <script>
-  const url = "https://script.google.com/macros/s/AKfycbxv8-cGlMdG3ilb60hxcWzi7nuaBXimpkNKYdRBuhbWpZ8jXWICX6zCNtmWHLATn-vQDA/exec";
+
+const url = "https://script.google.com/macros/s/AKfycbxv8-cGlMdG3ilb60hxcWzi7nuaBXimpkNKYdRBuhbWpZ8jXWICX6zCNtmWHLATn-vQDA/exec";
+
+const nombreEl = document.getElementById("nombre");
+const mensajeEl = document.getElementById("mensaje");
+
+let mensajes = [];
+let siguiente = null;
+
+function obtenerAleatorio(){
+  return mensajes[Math.floor(Math.random() * mensajes.length)];
+}
+
+function prepararSiguiente(){
+  siguiente = obtenerAleatorio();
+}
+
+function mostrarMensaje(){
+
+  if(!siguiente){
+    prepararSiguiente();
+  }
+
+  nombreEl.innerText = siguiente.nombre;
+  mensajeEl.innerText = siguiente.mensaje;
+
+  nombreEl.classList.add("mostrar");
+  mensajeEl.classList.add("mostrar");
+
+  prepararSiguiente(); // deja listo el siguiente
+}
 
 fetch(url)
 .then(res => res.json())
 .then(data => {
 
-  const mensajes = data;
+  mensajes = data;
 
-  const nombreEl = document.getElementById("nombre");
-  const mensajeEl = document.getElementById("mensaje");
-
-  function mostrarMensaje(){
-
-    const aleatorio = mensajes[Math.floor(Math.random() * mensajes.length)];
-
-    nombreEl.innerText = aleatorio.nombre;
-    mensajeEl.innerText = aleatorio.mensaje;
-
-    nombreEl.classList.add("mostrar");
-    mensajeEl.classList.add("mostrar");
-  }
-
-  mostrarMensaje();
+  prepararSiguiente();   // precarga primer mensaje
+  mostrarMensaje();      // lo muestra inmediatamente
 
   setInterval(()=>{
 
     nombreEl.classList.remove("mostrar");
     mensajeEl.classList.remove("mostrar");
 
-    setTimeout(mostrarMensaje,500);
+    setTimeout(()=>{
+      mostrarMensaje();
+    },200);   // transición rápida
 
   },5000);
 
@@ -133,10 +152,11 @@ fetch(url)
 .catch(err=>{
   console.error("Error:",err);
 });
-   
+
 </script>
 </body>
 </html>
+
 
 
 
