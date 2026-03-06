@@ -51,19 +51,28 @@
   top:60%;
   left:70%;
   transform:translate(-50%, -50%);
-  width:80%;
+
+  width:1200px;
+  max-width:1200px;
+
   text-align:center;
   font-size:150px;
   font-weight:800;
-  color:#453188 ;
-  width:1200px;          /* ancho máximo del contenedor */
-  max-width:1200px;
+  color:#453188;
+
+  font-family:"kit-rounded", sans-serif;
+
+  white-space:normal;       /* permite salto de línea */
+  word-wrap:break-word;
+  overflow-wrap:break-word;
+
+  line-height:0.95;         /* controla interlineado */
+
+  text-transform:uppercase;
+
   opacity:0;
   transition:opacity 0.3s ease-in-out;
-   font-family:"kit-rounded", sans-serif;
-  font-style: normal;
-   line-height:1.1;      /* 👈 controla el espacio entre líneas */
-  text-transform:uppercase;  /* 👈 convierte todo a MAYÚSCULA */
+
 }
 
     .mostrar {
@@ -124,6 +133,7 @@ fetch(url)
 </script>
 </body>
 </html>
+
 
 
 
