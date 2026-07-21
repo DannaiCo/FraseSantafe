@@ -2,179 +2,278 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>Día de la madre - iCo Medios</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nombre y frase</title>
 
-    <meta http-equiv="refresh" content="180" />
-
-    <!-- FUENTE -->
-    <link rel="stylesheet" href="https://use.typekit.net/vsp7vcb.css" />
     <style>
-      html,
-      body {
+      :root {
+        --ancho-lienzo: 2560;
+        --alto-lienzo: 1440;
+      }
+
+      * {
+        box-sizing: border-box;
         margin: 0;
         padding: 0;
+      }
+
+      html,
+      body {
         width: 100%;
         height: 100%;
         overflow: hidden;
-        background: #ffffff;
+        background: #000;
+        font-family: Arial, Helvetica, sans-serif;
       }
 
-      .contenedor {
+      /* Contenedor que centra y escala el lienzo completo */
+      #viewport {
         position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background: #000;
+      }
 
+      /* Lienzo de trabajo fijo: 2560 x 1440 px */
+      #lienzo {
+        position: absolute;
+        top: 50%;
+        left: 50%;
         width: 2560px;
         height: 1440px;
-
         overflow: hidden;
-
-        transform-origin: top left;
+        transform-origin: center center;
+        background: #000;
       }
 
-      /* VIDEO */
-      #fondoVideo {
+      /* Video de fondo */
+      #video-fondo {
         position: absolute;
         inset: 0;
-        width: 100%;
-        height: 100%;
+        width: 2560px;
+        height: 1440px;
         object-fit: cover;
         z-index: 0;
       }
 
-      /* CONTENEDOR TEXTO */
-      /* CONTENEDOR GENERAL */
-      #nombres {
+      /* Capa general para el contenido */
+      #contenido {
         position: absolute;
         inset: 0;
-        z-index: 5;
+        z-index: 1;
+        pointer-events: none;
       }
 
-      /* NOMBRE MAMÁ */
-      .nombre {
+      /* Nombre alineado a la izquierda */
+      #nombre {
+        color: #fff;
         position: absolute;
-
-        top: 1029px;
-        left: -69px;
-
-        width: 2000px;
-
-        text-align: center;
-
-        color: #0000ec;
-
-        font-size: 89px;
-
-        font-family: "filson-soft", sans-serif;
-
+        left: 347px;
+        bottom: 1198px;
+        max-width: 300px;
+        font-size: 56px;
         font-weight: 700;
-
-        font-style: normal;
-
-        opacity: 0;
-
-        transition: opacity 0.8s ease;
+        line-height: 1.1;
+        text-align: left;
+        text-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
       }
 
-      /* DICHO */
-      .dicho {
+      /*
+      Caja de la frase.
+      display:flex + align-items:center centra el texto verticalmente.
+    */
+      #caja-frase {
         position: absolute;
+        top: 299px;
+        right: 1747px;
+        width: 518px;
+        height: 821px;
 
-        top: 581px;
-        left: 525px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-        width: 1000px;
-
+        padding: 25px 19px;
         text-align: center;
-
-        color: #cd2530;
-
-        font-size: 130px;
-
-        line-height: 1.2;
-
-        font-family: "filson-soft", sans-serif;
-
-        font-weight: 700;
-
-        font-style: normal;
-
-        opacity: 0;
-
-        transition: opacity 0.8s ease;
       }
-      .mostrar {
+
+      #frase {
+        width: 100%;
+        color: #262626;
+        font-size: 83px;
+        font-weight: 700;
+        line-height: 1.08;
+        overflow-wrap: break-word;
+        text-wrap: balance;
+        text-align: left;
+        text-shadow: 0 3px 11px rgba(0, 0, 0, 0.2);
+      }
+
+      #estado {
+        position: absolute;
+        left: 50%;
+        bottom: 40px;
+        transform: translateX(-50%);
+        padding: 12px 24px;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.65);
+        color: #fff;
+        font-size: 26px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      #estado.visible {
         opacity: 1;
       }
     </style>
   </head>
 
   <body>
-    <div class="contenedor">
-      <!-- VIDEO -->
-      <video autoplay muted loop playsinline id="fondoVideo">
-        <source src="fondo.mp4" type="video/mp4" />
-      </video>
+    <main id="viewport">
+      <section id="lienzo">
+        <video id="video-fondo" autoplay muted loop playsinline preload="auto">
+          <source src="fondo.mp4" type="video/mp4" />
+          Tu navegador no soporta video HTML5.
+        </video>
 
-      <!-- TEXTOS -->
-      <div id="nombres">
-        <div class="dicho"></div>
-      </div>
-    </div>
+        <div id="contenido">
+          <div id="caja-frase">
+            <div id="frase">Cargando frase...</div>
+          </div>
+
+          <div id="nombre"></div>
+          <div id="estado"></div>
+        </div>
+      </section>
+    </main>
+
     <script>
-      function escalarPantalla() {
-        const escalaX = window.innerWidth / 2560;
-        const escalaY = window.innerHeight / 1440;
+      const URL_APPS_SCRIPT =
+        "https://script.google.com/macros/s/AKfycbzAn8PgnjyUodElQ3qerWxL4hIW96_wO1vRO8jgLQVweEmYFvjwCUL2S5dTs28p74tk/exec";
 
+      const ANCHO_LIENZO = 2560;
+      const ALTO_LIENZO = 1440;
+
+      const lienzo = document.getElementById("lienzo");
+      const nombreElemento = document.getElementById("nombre");
+      const fraseElemento = document.getElementById("frase");
+      const estadoElemento = document.getElementById("estado");
+
+      let registros = [];
+      let indiceActual = -1;
+
+      /**
+       * Escala proporcionalmente el lienzo de 2560 x 1440
+       * para que siempre entre completo en la pantalla.
+       */
+      function ajustarLienzo() {
+        const escalaX = window.innerWidth / ANCHO_LIENZO;
+        const escalaY = window.innerHeight / ALTO_LIENZO;
         const escala = Math.min(escalaX, escalaY);
 
-        document.querySelector(".contenedor").style.transform = `scale(${escala})`;
+        lienzo.style.transform = `translate(-50%, -50%) scale(${escala})`;
       }
 
-      window.addEventListener("resize", escalarPantalla);
-      window.addEventListener("load", escalarPantalla);
+      function mostrarEstado(mensaje) {
+        estadoElemento.textContent = mensaje;
+        estadoElemento.classList.add("visible");
+      }
 
-      escalarPantalla();
+      function ocultarEstado() {
+        estadoElemento.classList.remove("visible");
+      }
 
-      const url =
-        "https://script.google.com/macros/s/AKfycbzwPsdGLy5kUFCS6T-J5LaXAsN8tPmV_h23cY9wNMb5-aJUj-fnhpsVya1oSLXGgjlelg/exec";
+      /**
+       * Normaliza distintas formas posibles del JSON:
+       * {nombre, frase}, {Nombre, Frase}, etc.
+       */
+      function normalizarRegistro(registro) {
+        return {
+          nombre: registro.nombre ?? registro.Nombre ?? registro.NOMBRE ?? "",
+          frase: registro.frase ?? registro.Frase ?? registro.FRASE ?? ""
+        };
+      }
 
-      const elDicho = document.querySelector(".dicho");
+      /**
+       * Selecciona un registro aleatorio evitando repetir
+       * inmediatamente el mismo, cuando hay más de uno.
+       */
+      function obtenerRegistroAleatorio() {
+        if (registros.length === 0) {
+          return null;
+        }
 
-      fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Datos recibidos:", data);
+        if (registros.length === 1) {
+          indiceActual = 0;
+          return registros[0];
+        }
 
-          if (!data || data.length === 0) {
-            elDicho.textContent = "No hay frases aprobadas";
-            elDicho.classList.add("mostrar");
-            return;
+        let nuevoIndice;
+
+        do {
+          nuevoIndice = Math.floor(Math.random() * registros.length);
+        } while (nuevoIndice === indiceActual);
+
+        indiceActual = nuevoIndice;
+        return registros[nuevoIndice];
+      }
+
+      function mostrarRegistro(registro) {
+        if (!registro) {
+          nombreElemento.textContent = "";
+          fraseElemento.textContent = "No hay frases aprobadas.";
+          return;
+        }
+
+        nombreElemento.textContent = registro.nombre;
+        fraseElemento.textContent = registro.frase;
+      }
+
+      async function cargarDatos() {
+        mostrarEstado("Cargando información...");
+
+        try {
+          const respuesta = await fetch(URL_APPS_SCRIPT, {
+            method: "GET",
+            cache: "no-store"
+          });
+
+          if (!respuesta.ok) {
+            throw new Error(`Error HTTP ${respuesta.status}: ${respuesta.statusText}`);
           }
 
-          let index = 0;
+          const datos = await respuesta.json();
 
-         function mostrarMensaje() {
-  const item = data[Math.floor(Math.random() * data.length)];
+          if (!Array.isArray(datos)) {
+            throw new Error("La respuesta de Apps Script no es un arreglo JSON.");
+          }
 
-  console.log("Frase aleatoria:", item);
+          registros = datos.map(normalizarRegistro).filter((registro) => registro.frase.trim() !== "");
 
-  elDicho.classList.remove("mostrar");
+          mostrarRegistro(obtenerRegistroAleatorio());
+          ocultarEstado();
+        } catch (error) {
+          console.error("No fue posible cargar los datos:", error);
 
-  setTimeout(() => {
-    elDicho.textContent = item || "";
-    elDicho.classList.add("mostrar");
-  }, 300);
-}
+          nombreElemento.textContent = "";
+          fraseElemento.textContent = "No fue posible cargar la información.";
 
-          mostrarMensaje();
+          mostrarEstado("Verifica la URL, los permisos del Web App y la conexión.");
+        }
+      }
 
-          setInterval(mostrarMensaje, 5000);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
+      window.addEventListener("resize", ajustarLienzo);
 
-          elDicho.textContent = "Error cargando frases";
-          elDicho.classList.add("mostrar");
-        });
+      ajustarLienzo();
+      cargarDatos();
+
+      /*
+      Actualiza el contenido cada 180 segundos.
+      Puedes cambiar 180000 por otro intervalo en milisegundos.
+    */
+      setInterval(cargarDatos, 180000);
     </script>
   </body>
 </html>
