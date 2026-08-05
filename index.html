@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nombre y frase</title>
+    <link rel="stylesheet" href="https://use.typekit.net/vsp7vcb.css" />
+    <link rel="stylesheet" href="https://use.typekit.net/vsp7vcb.css" />
 
     <style>
       :root {
@@ -23,7 +25,6 @@
         height: 100%;
         overflow: hidden;
         background: #000;
-        font-family: Arial, Helvetica, sans-serif;
       }
 
       /* Contenedor que centra y escala el lienzo completo */
@@ -67,16 +68,22 @@
 
       /* Nombre alineado a la izquierda */
       #nombre {
-        color: #fff;
+        text-transform: uppercase;
+        display: grid;
+        color: #753806;
         position: absolute;
-        left: 347px;
-        bottom: 1198px;
-        max-width: 300px;
-        font-size: 56px;
-        font-weight: 700;
+        left: 130px;
+        bottom: 209px;
+        width: 802px;
+        height: 130px;
+        font-size: 93px;
         line-height: 1.1;
-        text-align: left;
+        text-align: center;
+        align-content: center;
         text-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+        font-family: "rival-sans", sans-serif;
+        font-weight: 600;
+        font-style: italic;
       }
 
       /*
@@ -85,29 +92,30 @@
     */
       #caja-frase {
         position: absolute;
-        top: 299px;
-        right: 1747px;
-        width: 518px;
-        height: 821px;
-
+        top: 441px;
+        right: 1587px;
+        width: 868px;
+        height: 657px;
         display: flex;
         align-items: center;
         justify-content: center;
-
-        padding: 25px 19px;
+        padding: 28px 15px;
         text-align: center;
       }
 
       #frase {
-        width: 100%;
-        color: #262626;
-        font-size: 83px;
-        font-weight: 700;
-        line-height: 1.08;
+        text-align: center;
+        width: 90%;
+        color: #fff;
+        font-size: 125px;
+        line-height: 1;
         overflow-wrap: break-word;
         text-wrap: balance;
-        text-align: left;
+        text-align: center;
         text-shadow: 0 3px 11px rgba(0, 0, 0, 0.2);
+        font-family: "jaf-domus", sans-serif;
+        font-weight: 700;
+        font-style: normal;
       }
 
       #estado {
@@ -125,7 +133,7 @@
       }
 
       #estado.visible {
-        opacity: 1;
+        opacity: 0;
       }
     </style>
   </head>
@@ -151,7 +159,7 @@
 
     <script>
       const URL_APPS_SCRIPT =
-        "https://script.google.com/macros/s/AKfycbzAn8PgnjyUodElQ3qerWxL4hIW96_wO1vRO8jgLQVweEmYFvjwCUL2S5dTs28p74tk/exec";
+        "https://script.google.com/macros/s/AKfycbyJ5JFUHJ58raugWjFHPIalheMR_H8Hmb4g74yij2oTrTaqk8uIAoiLe9O91ERR8JjQ/exec";
 
       const ANCHO_LIENZO = 2560;
       const ALTO_LIENZO = 1440;
@@ -273,7 +281,7 @@
       Actualiza el contenido cada 180 segundos.
       Puedes cambiar 180000 por otro intervalo en milisegundos.
     */
-      setInterval(cargarDatos, 180000);
+      setInterval(cargarDatos, 5000);
     </script>
   </body>
 </html>
